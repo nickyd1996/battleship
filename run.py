@@ -1,5 +1,5 @@
 import gspread 
-from google.oauth2.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 from flask import Flask, render_template, request, jsonify
 import random
 
@@ -8,14 +8,10 @@ SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 CREDS_FILE = 'creds.json'  
 SPREADSHEET_NAME = 'Battleships'  
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDS_FILE, SCOPE)
+credentials = Credentials.from_service_account_file(CREDS_FILE, scopes=SCOPE)
 client = gspread.authorize(credentials)
-def jls_extract_def():
-    
-    return 
 
-
-sheet = client.open(SPREADSHEET_NAME).sheet1 = jls_extract_def()
+sheet = client.open(SPREADSHEET_NAME).sheet1
 
 
 #Flask app
