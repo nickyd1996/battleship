@@ -10,7 +10,6 @@ SPREADSHEET_NAME = 'Battleships'
 
 credentials = Credentials.from_service_account_file(CREDS_FILE, scopes=SCOPE)
 client = gspread.authorize(credentials)
-
 sheet = client.open(SPREADSHEET_NAME).sheet1
 
 
