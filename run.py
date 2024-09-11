@@ -4,17 +4,18 @@ from flask import Flask, render_template, request, jsonify
 import random
 
 #Google Sheets Setup
-SCOPE = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/drive"
-    ]
-CREDS = Credentials.from_service_account_file('creds.json')
-SCOPED_CREDS = CREDS.with_scopes(SCOPE)
-GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-SHEET = GSPREAD_CLIENT.open('battleships')
-info = SHEET.worksheet('info')
+SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+CREDS_FILE = 'creds.json'  
+SPREADSHEET_NAME = 'Battleships'  
 
+credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDS_FILE, SCOPE)
+client = gspread.authorize(credentials)
+def jls_extract_def():
+    
+    return 
+
+
+sheet = client.open(SPREADSHEET_NAME).sheet1 = jls_extract_def()
 
 
 #Flask app
@@ -26,21 +27,9 @@ BOARD_SIZE = 5
 def initialize_board():
     for i in range(1, BOARD_SIZE + 1):
         for j in range(1, BOARD_SIZE + 1):
-            info.update_cell(i, j, "")  # Clear the grid
-
-@app.route('/initialize')
-def initialize():
-    initialize_board()
-    return "Board initialized"
-
-
-
-def initialize_board():
-    for i in range(1, BOARD_SIZE + 1):
-        for j in range(1, BOARD_SIZE + 1):
             sheet.update_cell(i, j, "")  # Clear the grid
 
-    # Randomly place 3 ships
+# Place 3 ships randomly on the board
     ships = 0
     while ships < 3:
         x = random.randint(1, BOARD_SIZE)
@@ -49,6 +38,7 @@ def initialize_board():
             sheet.update_cell(x, y, "S")
             ships += 1
 
+# Function to check the result of an attack
 def check_attack(x, y):
     cell_value = sheet.cell(x, y).value
     if cell_value == "S":
@@ -59,6 +49,13 @@ def check_attack(x, y):
         return "miss"
     return "already attacked"
 
+# Route to initialize the game
+@app.route('/initialize', methods=['GET'])
+def initialize():
+    initialize_board()
+    return "Game Initialized!"
+
+# Route to handle the attack
 @app.route('/attack', methods=['POST'])
 def attack():
     data = request.json
@@ -66,3 +63,11 @@ def attack():
     y = int(data['y'])
     result = check_attack(x, y)
     return jsonify({"result": result})
+
+# Main route for the game
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
