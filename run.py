@@ -10,9 +10,8 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('battleships')
-BoardSetup = SHEET.worksheet('BoardSetup')
-data = BoardSetup.get_all_values()
-print(data)
+info = SHEET.worksheet('info')
+
 
 from flask import Flask, render_template
 
@@ -24,3 +23,9 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/test')
+def test_info():
+    # Example of writing "test" to cell A1
+    info.update_cell(1, 1, "test")
+    return "Google Sheets API is working"
