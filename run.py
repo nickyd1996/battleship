@@ -1,6 +1,9 @@
 import gspread 
 from google.oauth2.service_account import Credentials
+from flask import Flask, render_template, request, jsonify
+import random
 
+#Google Sheets Setup
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
@@ -13,12 +16,13 @@ SHEET = GSPREAD_CLIENT.open('battleships')
 info = SHEET.worksheet('info')
 
 
-from flask import Flask, render_template
 
+#Flask app
 app = Flask(__name__)
 
 BOARD_SIZE = 5
 
+#initialize the board in Google Sheets
 def initialize_board():
     for i in range(1, BOARD_SIZE + 1):
         for j in range(1, BOARD_SIZE + 1):
@@ -29,7 +33,7 @@ def initialize():
     initialize_board()
     return "Board initialized"
 
-import random
+
 
 def initialize_board():
     for i in range(1, BOARD_SIZE + 1):
