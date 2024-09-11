@@ -17,15 +17,14 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+BOARD_SIZE = 5
 
-if __name__ == '__main__':
-    app.run(debug=True)
+def initialize_board():
+    for i in range(1, BOARD_SIZE + 1):
+        for j in range(1, BOARD_SIZE + 1):
+            info.update_cell(i, j, "")  # Clear the grid
 
-@app.route('/test')
-def test_info():
-    # Example of writing "test" to cell A1
-    info.update_cell(1, 1, "test")
-    return "Google Sheets API is working"
+@app.route('/initialize')
+def initialize():
+    initialize_board()
+    return "Board initialized"
